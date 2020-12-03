@@ -31,8 +31,14 @@ import UIKit
         set { exit = Position(rawValue: newValue) ?? .bottom }
     }
 
+    /// Line width of the line
+    @IBInspectable open var lineWidth: CGFloat = 2.0 { didSet { pathLayer.lineWidth = lineWidth } }
+
     /// Width of the arrow head flaring (gap across the top of the "V")
     @IBInspectable open var arrowWidth: CGFloat = 8.0 { didSet { createPath() } }
+
+    /// Color of the lines
+    @IBInspectable open var lineColor: UIColor = .systemOrange { didSet { pathLayer.strokeColor = lineColor.cgColor } }
 
     /// Length of the arrow head
     @IBInspectable open var arrowLength: CGFloat = 10.0 { didSet { createPath() } }
@@ -75,8 +81,8 @@ extension ArrowView {
     private func initialize() {
         layer.addSublayer(pathLayer)
         pathLayer.fillColor = UIColor.clear.cgColor
-        pathLayer.strokeColor = UIColor.systemRed.cgColor
-        pathLayer.lineWidth = 2.0
+        pathLayer.strokeColor = lineColor.cgColor
+        pathLayer.lineWidth = lineWidth
         createPath()
     }
 
