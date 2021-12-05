@@ -16,8 +16,8 @@ jobs:
     - name: Generate Test Coverage
       run: |
         set -x
-        XCTEST_PATH="$(find $HOME/Library/Developer/Xcode/DerivedData -name 'ArrowView-*' -prune)"
-        set -- $(xcrun llvm-cov report ${XCTEST_PATH}/Build/Products/Debug-iphonesimulator/ArrowViewTests.xctest/ArrowViewTests -instr-profile ${XCTEST_PATH}/Build/ProfileData/*/Coverage.profdata -ignore-filename-regex='Tests/|SourcePackages/')
+        XCTEST_PATH="$(find . -name '*.xctest')"
+        set -- $(xcrun llvm-cov report ${XCTEST_PATH}/Contents/MacOS/*PackageTests -instr-profile .build/debug/codecov/default.profdata -ignore-filename-regex='.build/|Tests/' | tail -1)
         echo "$4" > .build/debug/codecov/percentage.txt
         echo "PERCENTAGE=$4" >> $GITHUB_ENV
     - name: Create Coverage Badge
