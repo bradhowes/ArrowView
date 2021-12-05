@@ -16,7 +16,7 @@ coverage:
 	xcrun llvm-cov report \
 		${XCTEST_PATH}/Build/Products/Debug-iphonesimulator/ArrowView.framework/ArrowView \
 		-instr-profile ${XCTEST_PATH}/Build/ProfileData/*/Coverage.profdata > cov.txt
-	tail -1 cov.txt | cut -f 10 -w > percentage.txt
+	tail -1 cov.txt | awk '{ print $$10; }' > percentage.txt
 	if [[ -n "$$GITHUB_ENV" ]]; then echo "PERCENTAGE=$$(< percentage.txt)" >> $$GITHUB_ENV; fi
 
 .PHONY: test coverage
