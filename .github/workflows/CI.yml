@@ -12,4 +12,20 @@ jobs:
     - name: Generate xcodeproj
       run: swift package generate-xcodeproj
     - name: Run tests
-      run: xcodebuild test -destination 'name=iPhone 11' -scheme 'ArrowView-Package'
+      run: xcodebuild test -destination 'name=iPhone 11' -scheme 'ArrowView-Package' -enableCodeCoverage YES
+    - name: Generate Test Coverage
+      run: |
+        set -x
+        XCTEST_PATH="$(find $HOME/Library/Developer/Xcode/DerivedData -name 'ArrowView-*' -prune)"
+        set -- $(xcrun llvm-cov report ${XCTEST_PATH}/Build/Products/Debug-iphonesimulator/ArrowViewTests.xctest/ArrowViewTests -instr-profile ${XCTEST_PATH}/Build/ProfileData/*/Coverage.profdata -ignore-filename-regex='Tests/|SourcePackages/')
+        echo "$4" > .build/debug/codecov/percentage.txt
+        echo "PERCENTAGE=$4" >> $GITHUB_ENV
+    - name: Create Coverage Badge
+      uses: schneegans/dynamic-badges-action@v1.1.0
+      with:
+        auth: ${{ secrets.GIST_UPDATE }}
+        gistID: b307c10e9eb7882e6a83a3bcb1e5cd5d
+        filename: Knob-coverage.json
+        label: Coverage
+        message: ${{ env.PERCENTAGE }}
+        color: success
