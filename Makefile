@@ -10,12 +10,13 @@ test:
 		-destination platform="$(PLATFORM_IOS)" \
 		-enableCodeCoverage YES ENABLE_TESTING_SEARCH_PATHS=YES
 
+# Extract coverage info for ArrowView.swift -- expects defintion of env variable GITHUB_ENV
 coverage: export XCTEST_PATH := $(shell find ~/Library/Developer/Xcode/DerivedData -name 'ArrowView-*' -prune)
 coverage:
 	xcrun llvm-cov report \
 		${XCTEST_PATH}/Build/Products/Debug-iphonesimulator/ArrowView.framework/ArrowView \
 		-instr-profile ${XCTEST_PATH}/Build/ProfileData/*/Coverage.profdata > cov.txt
 	tail -1 cov.txt | cut -f 10 -w > percentage.txt
-	echo "PERCENTAGE=$$(< percentage.txt)" >> $$GITHUB_ENV
+	if [[ -n "$$GITHUB_ENV" ]]; then echo "PERCENTAGE=$$(< percentage.txt)" >> $$GITHUB_ENV; fi
 
 .PHONY: test coverage
