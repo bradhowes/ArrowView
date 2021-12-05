@@ -15,3 +15,12 @@ jobs:
       run: make test
     - name: Code Coverage
       run: make coverage
+    - name: Create Coverage Badge
+      uses: schneegans/dynamic-badges-action@v1.1.0
+      with:
+        auth: ${{ secrets.GIST_UPDATE }}
+        gistID: f924b101caff1acdcf6ab45dfaa299eb
+        filename: ArrowView-coverage.json
+        label: Coverage
+        message: ${{ env.PERCENTAGE }}
+        color: success
