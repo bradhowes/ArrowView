@@ -25,7 +25,7 @@ coverage:
 	done; \
 	[[ -f cov.txt ]] || { echo "** no coverage report found"; exit 1; \\; }
 	@tail -1 cov.txt | awk '{ print $$10; }' > percentage.txt
-	@echo "PERCENTAGE=$$(< percentage.txt)"; \
+	@echo "-- PERCENTAGE=$$(< percentage.txt)"
 	@if [[ -n "$$GITHUB_ENV" ]]; then \
 		echo "PERCENTAGE=$$(< percentage.txt)" >> $$GITHUB_ENV; \
 	fi
