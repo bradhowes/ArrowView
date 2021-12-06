@@ -173,7 +173,4 @@ extension UIBezierPath {
 extension CGPoint {
   @inlinable
   static func + (lhs: CGPoint, rhs: CGVector) -> CGPoint { .init(x: lhs.x + rhs.dx, y: lhs.y + rhs.dy) }
-
-  @inlinable
-  static func + (lhs: CGVector, rhs: CGPoint) -> CGPoint { rhs + lhs }
 }

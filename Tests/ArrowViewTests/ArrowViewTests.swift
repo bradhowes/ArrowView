@@ -194,6 +194,8 @@ final class ArrowViewTests: XCTestCase {
     XCTAssertEqual(view.entry, ArrowView.Position.top)
     view.entry = .right
     XCTAssertEqual(view.entryIB, ArrowView.Position.right.rawValue)
+    view.entryIB = 99
+    XCTAssertEqual(view.entryIB, ArrowView.Position.left.rawValue)
   }
 
   func testExitIB() throws {
@@ -203,6 +205,18 @@ final class ArrowViewTests: XCTestCase {
     XCTAssertEqual(view.exit, ArrowView.Position.top)
     view.exit = .right
     XCTAssertEqual(view.exitIB, ArrowView.Position.right.rawValue)
+    view.exitIB = 99
+    XCTAssertEqual(view.exitIB, ArrowView.Position.bottom.rawValue)
+  }
+
+  func testInit() throws {
+    let view = ArrowView(frame: CGRect(x: 0.0, y: 0.0, width: 100.0, height: 100.0))
+    let encoder = NSKeyedArchiver.init(requiringSecureCoding: false)
+    view.encode(with: encoder)
+    encoder.finishEncoding()
+    let decoder = try! NSKeyedUnarchiver.init(forReadingFrom: encoder.encodedData)
+    let view2 = ArrowView(coder: decoder)
+    XCTAssertNotNil(view2)
   }
 
   static var allTests = [
