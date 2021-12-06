@@ -180,12 +180,29 @@ final class ArrowViewTests: XCTestCase {
   }
 
   func testWavyFactor() throws {
-    // isRecording = true
     let view = ArrowView(frame: CGRect(x: 0.0, y: 0.0, width: 100.0, height: 100.0))
     view.entry = .left
     view.exit = .right
     view.wavyFactor = 1.0
     try assertSnapshot(matching: view)
+  }
+
+  func testEntryIB() throws {
+    let view = ArrowView(frame: CGRect(x: 0.0, y: 0.0, width: 100.0, height: 100.0))
+    XCTAssertEqual(view.entry, ArrowView.Position.left)
+    view.entryIB = 1
+    XCTAssertEqual(view.entry, ArrowView.Position.top)
+    view.entry = .right
+    XCTAssertEqual(view.entryIB, ArrowView.Position.right.rawValue)
+  }
+
+  func testExitIB() throws {
+    let view = ArrowView(frame: CGRect(x: 0.0, y: 0.0, width: 100.0, height: 100.0))
+    XCTAssertEqual(view.exit, ArrowView.Position.bottom)
+    view.exitIB = 1
+    XCTAssertEqual(view.exit, ArrowView.Position.top)
+    view.exit = .right
+    XCTAssertEqual(view.exitIB, ArrowView.Position.right.rawValue)
   }
 
   static var allTests = [

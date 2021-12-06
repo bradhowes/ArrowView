@@ -11,12 +11,24 @@ test:
 		-enableCodeCoverage YES ENABLE_TESTING_SEARCH_PATHS=YES
 
 # Extract coverage info for ArrowView.swift -- expects defintion of env variable GITHUB_ENV
-coverage: export XCTEST_PATH := $(shell find ~/Library/Developer/Xcode/DerivedData -name 'ArrowView-*' -prune)
+PROJECT = ArrowView
 coverage:
-	xcrun llvm-cov report \
-		${XCTEST_PATH}/Build/Products/Debug-iphonesimulator/ArrowView.framework/ArrowView \
-		-instr-profile ${XCTEST_PATH}/Build/ProfileData/*/Coverage.profdata > cov.txt
-	tail -1 cov.txt | awk '{ print $$10; }' > percentage.txt
-	if [[ -n "$$GITHUB_ENV" ]]; then echo "PERCENTAGE=$$(< percentage.txt)" >> $$GITHUB_ENV; fi
+	@-rm -f cov.txt percentage.txt
+	@for XCTEST_PATH in $$(find $${HOME}/Library/Developer/Xcode/DerivedData -name '$(PROJECT)-*' -prune); do \
+		echo "-- checking $${XCTEST_PATH}"; \
+		OBJ="$${XCTEST_PATH}/Build/Products/Debug-iphonesimulator/$(PROJECT).framework/${PROJECT}"; \
+		set -- $${XCTEST_PATH}/Build/ProfileData/*/Coverage.profdata; \
+		if [[ -f "$${1}" && -f "$${OBJ}" ]]; then \
+			echo "-- generaing coverage from $${1}"; \
+			xcrun llvm-cov report "$${OBJ}" -instr-profile "$${1}" > cov.txt; \
+		fi; \
+	done; \
+	[[ -f cov.txt ]] || { echo "** no coverage report found"; exit 1; \\; }
+	@tail -1 cov.txt | awk '{ print $$10; }' > percentage.txt
+	@if [[ -n "$$GITHUB_ENV" ]]; then \
+		echo "PERCENTAGE=$$(< percentage.txt)" >> $$GITHUB_ENV; \
+	else \
+		echo "PERCENTAGE=$$(< percentage.txt)"; \
+	fi
 
 .PHONY: test coverage
